@@ -2,10 +2,7 @@
     \file    gd32f30x_gpio.c
     \brief   GPIO driver
 
-    \version 2017-02-10, V1.0.0, firmware for GD32F30x
-    \version 2018-10-10, V1.1.0, firmware for GD32F30x
-    \version 2018-12-25, V2.0.0, firmware for GD32F30x
-    \version 2020-09-30, V2.1.0, firmware for GD32F30x
+    \version 2023-12-30, V2.2.0, firmware for GD32F30x
 */
 
 /*
@@ -358,7 +355,7 @@ uint16_t gpio_output_port_get(uint32_t gpio_periph)
       \arg        GPIO_SWJ_SWDPENABLE_REMAP: JTAG-DP disabled and SW-DP enabled
       \arg        GPIO_SWJ_DISABLE_REMAP: JTAG-DP disabled and SW-DP disabled
       \arg        GPIO_SPI2_REMAP: SPI2 remapping 
-      \arg        GPIO_TIMER1ITR0_REMAP: TIMER1 internal trigger 0 remapping(only for GD32F30X_CL devices)
+      \arg        GPIO_TIMER1ITI1_REMAP: TIMER1 internal trigger 1 remapping(only for GD32F30X_CL devices)
       \arg        GPIO_PTP_PPS_REMAP: ethernet PTP PPS remapping(only for GD32F30X_CL devices) 
       \arg        GPIO_TIMER8_REMAP: TIMER8 remapping
       \arg        GPIO_TIMER9_REMAP: TIMER9 remapping

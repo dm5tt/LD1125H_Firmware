@@ -2,11 +2,7 @@
     \file    gd32f30x_enet.c
     \brief   ENET driver
 
-    \version 2017-02-10, V1.0.0, firmware for GD32F30x
-    \version 2018-10-10, V1.1.0, firmware for GD32F30x
-    \version 2018-12-25, V2.0.0, firmware for GD32F30x
-    \version 2020-04-02, V2.0.1, firmware for GD32F30x
-    \version 2020-09-30, V2.1.0, firmware for GD32F30x
+    \version 2023-12-30, V2.2.0, firmware for GD32F30x
 */
 
 /*
@@ -3640,6 +3636,18 @@ static void enet_default_init(void)
 
     /* configure ENET_MAC_VLT register */
     ENET_MAC_VLT = ENET_VLANTAGCOMPARISON_16BIT |MAC_VLT_VLTI(0);
+
+    /* disable MAC interrupt */
+    ENET_MAC_INTMSK |= ENET_MAC_INTMSK_TMSTIM | ENET_MAC_INTMSK_WUMIM;
+
+    /* MSC */
+    /* disable MSC Rx interrupt */
+    ENET_MSC_RINTMSK |= ENET_MSC_RINTMSK_RFAEIM | ENET_MSC_RINTMSK_RFCEIM \
+                        | ENET_MSC_RINTMSK_RGUFIM;
+
+    /* disable MSC Tx interrupt */
+    ENET_MSC_TINTMSK |= ENET_MSC_TINTMSK_TGFIM | ENET_MSC_TINTMSK_TGFMSCIM \
+                        | ENET_MSC_TINTMSK_TGFSCIM;
 
     /* DMA */
     /* configure ENET_DMA_CTL register */

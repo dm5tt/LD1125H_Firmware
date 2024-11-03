@@ -2,10 +2,7 @@
     \file    gd32f30x_fmc.c
     \brief   FMC driver
 
-    \version 2017-02-10, V1.0.0, firmware for GD32F30x
-    \version 2018-10-10, V1.1.0, firmware for GD32F30x
-    \version 2018-12-25, V2.0.0, firmware for GD32F30x
-    \version 2020-09-30, V2.1.0, firmware for GD32F30x
+    \version 2023-12-30, V2.2.0, firmware for GD32F30x
 */
 
 /*
@@ -176,6 +173,8 @@ fmc_state_enum fmc_page_erase(uint32_t page_address)
                 FMC_CTL0 |= FMC_CTL0_PER;
                 FMC_ADDR0 = page_address;
                 FMC_CTL0 |= FMC_CTL0_START;
+                __NOP();
+                __NOP();
                 /* wait for the FMC ready */
                 fmc_state = fmc_bank0_ready_wait(FMC_TIMEOUT_COUNT);
                 /* reset the PER bit */
@@ -192,6 +191,8 @@ fmc_state_enum fmc_page_erase(uint32_t page_address)
                     FMC_ADDR0 = page_address;
                 }
                 FMC_CTL1 |= FMC_CTL1_START;
+                __NOP();
+                __NOP();
                 /* wait for the FMC ready */
                 fmc_state = fmc_bank1_ready_wait(FMC_TIMEOUT_COUNT);
                 /* reset the PER bit */
@@ -205,6 +206,8 @@ fmc_state_enum fmc_page_erase(uint32_t page_address)
             FMC_CTL0 |= FMC_CTL0_PER;
             FMC_ADDR0 = page_address;
             FMC_CTL0 |= FMC_CTL0_START;
+            __NOP();
+            __NOP();
             /* wait for the FMC ready */
             fmc_state = fmc_bank0_ready_wait(FMC_TIMEOUT_COUNT);
             /* reset the PER bit */

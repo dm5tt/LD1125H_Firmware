@@ -2,10 +2,7 @@
     \file    gd32f30x_gpio.h
     \brief   definitions for the GPIO
 
-    \version 2017-02-10, V1.0.0, firmware for GD32F30x
-    \version 2018-10-10, V1.1.0, firmware for GD32F30x
-    \version 2018-12-25, V2.0.0, firmware for GD32F30x
-    \version 2020-09-30, V2.1.0, firmware for GD32F30x
+    \version 2023-12-30, V2.2.0, firmware for GD32F30x
 */
 
 /*
@@ -260,7 +257,7 @@ OF SUCH DAMAGE.
 #define AFIO_PCF0_ENET_PHY_SEL           BIT(23)             /*!< ethernet MII or RMII PHY selection */
 #define AFIO_PCF0_SWJ_CFG                BITS(24,26)         /*!< serial wire JTAG configuration */
 #define AFIO_PCF0_SPI2_REMAP             BIT(28)             /*!< SPI2/I2S2 remapping */
-#define AFIO_PCF0_TIMER1ITR0_REMAP       BIT(29)             /*!< TIMER1 internal trigger 0 remapping */
+#define AFIO_PCF0_TIMER1ITI1_REMAP       BIT(29)             /*!< TIMER1 internal trigger 1 remapping */
 #define AFIO_PCF0_PTP_PPS_REMAP          BIT(30)             /*!< ethernet PTP PPS remapping */
 
 #else 
@@ -461,7 +458,7 @@ typedef FlagStatus bit_status;
 #define GPIO_CAN0_FULL_REMAP             ((uint32_t)0x001D0000U | PCF0_CAN_REMAP(3))                      /*!< CAN0 full remapping(only for GD32F30X_CL devices) */
 #define GPIO_ENET_REMAP                  ((uint32_t)0x00200000U | (AFIO_PCF0_ENET_REMAP >> 16))           /*!< ENET remapping(only for GD32F30X_CL devices) */
 #define GPIO_CAN1_REMAP                  ((uint32_t)0x00200000U | (AFIO_PCF0_CAN1_REMAP >> 16))           /*!< CAN1 remapping(only for GD32F30X_CL devices) */
-#define GPIO_TIMER1ITR0_REMAP            ((uint32_t)0x00200000U | (AFIO_PCF0_TIMER1ITR0_REMAP >> 16))     /*!< TIMER1 internal trigger 0 remapping(only for GD32F30X_CL devices) */
+#define GPIO_TIMER1ITI1_REMAP            ((uint32_t)0x00200000U | (AFIO_PCF0_TIMER1ITI1_REMAP >> 16))     /*!< TIMER1 internal trigger 1 remapping(only for GD32F30X_CL devices) */
 #define GPIO_PTP_PPS_REMAP               ((uint32_t)0x00200000U | (AFIO_PCF0_PTP_PPS_REMAP >> 16))        /*!< ethernet PTP PPS remapping(only for GD32F30X_CL devices) */
 #endif /* GD32F30X_CL */
 #define GPIO_TIMER8_REMAP                ((uint32_t)0x80000000U | AFIO_PCF1_TIMER8_REMAP)                 /*!< TIMER8 remapping */

@@ -2,10 +2,7 @@
     \file    gd32f30x_dbg.c
     \brief   DBG driver
 
-    \version 2017-02-10, V1.0.0, firmware for GD32F30x
-    \version 2018-10-10, V1.1.0, firmware for GD32F30x
-    \version 2018-12-25, V2.0.0, firmware for GD32F30x
-    \version 2020-09-30, V2.1.0, firmware for GD32F30x
+    \version 2023-12-30, V2.2.0, firmware for GD32F30x
 */
 
 /*
@@ -145,20 +142,4 @@ void dbg_trace_pin_enable(void)
 void dbg_trace_pin_disable(void)
 {
     DBG_CTL0 &= ~DBG_CTL0_TRACE_IOEN;
-}
-
-/*!
-    \brief      trace pin mode selection 
-    \param[in]  trace_mode:
-      \arg        TRACE_MODE_ASYNC: trace pin used for async mode 
-      \arg        TRACE_MODE_SYNC_DATASIZE_1: trace pin used for sync mode and data size is 1
-      \arg        TRACE_MODE_SYNC_DATASIZE_2: trace pin used for sync mode and data size is 2
-      \arg        TRACE_MODE_SYNC_DATASIZE_4: trace pin used for sync mode and data size is 4
-    \param[out] none
-    \retval     none
-*/
-void dbg_trace_pin_mode_set(uint32_t trace_mode)
-{
-    DBG_CTL0 &= ~DBG_CTL0_TRACE_MODE;
-    DBG_CTL0 |= trace_mode;
 }

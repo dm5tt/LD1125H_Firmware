@@ -2,11 +2,7 @@
     \file    gd32f30x_enet.h
     \brief   definitions for the ENET
 
-    \version 2017-02-10, V1.0.0, firmware for GD32F30x
-    \version 2018-10-10, V1.1.0, firmware for GD32F30x
-    \version 2018-12-25, V2.0.0, firmware for GD32F30x
-    \version 2020-04-02, V2.0.1, firmware for GD32F30x
-    \version 2020-09-30, V2.1.0, firmware for GD32F30x
+    \version 2023-12-30, V2.2.0, firmware for GD32F30x
 */
 
 /*
@@ -124,7 +120,7 @@ OF SUCH DAMAGE.
 #define ENET_MAC_HLH                     REG32((ENET) + 0x08U)                  /*!< ethernet MAC hash list high register */
 #define ENET_MAC_HLL                     REG32((ENET) + 0x0CU)                  /*!< ethernet MAC hash list low register */
 #define ENET_MAC_PHY_CTL                 REG32((ENET) + 0x10U)                  /*!< ethernet MAC PHY control register */
-#define ENET_MAC_PHY_DATA                REG32((ENET) + 0x14U)                  /*!< ethernet MAC MII data register */
+#define ENET_MAC_PHY_DATA                REG32((ENET) + 0x14U)                  /*!< ethernet MAC PHY data register */
 #define ENET_MAC_FCTL                    REG32((ENET) + 0x18U)                  /*!< ethernet MAC flow control register */
 #define ENET_MAC_VLT                     REG32((ENET) + 0x1CU)                  /*!< ethernet MAC VLAN tag register */
 #define ENET_MAC_RWFF                    REG32((ENET) + 0x28U)                  /*!< ethernet MAC remote wakeup frame filter register */

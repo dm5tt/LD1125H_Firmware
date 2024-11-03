@@ -2,10 +2,7 @@
     \file    gd32f30x_ctc.c
     \brief   CTC driver
 
-    \version 2017-02-10, V1.0.0, firmware for GD32F30x
-    \version 2018-10-10, V1.1.0, firmware for GD32F30x
-    \version 2018-12-25, V2.0.0, firmware for GD32F30x
-    \version 2020-09-30, V2.1.0, firmware for GD32F30x
+    \version 2023-12-30, V2.2.0, firmware for GD32F30x
 */
 
 /*
@@ -58,8 +55,6 @@ void ctc_deinit(void)
     rcu_periph_reset_disable(RCU_CTCRST);
 }
 
-
-
 /*!
     \brief      enable CTC trim counter
     \param[in]  none
@@ -84,7 +79,7 @@ void ctc_counter_disable(void)
 
 /*!
     \brief      configure the IRC48M trim value
-    \param[in]  ctc_trim_value: 8-bit IRC48M trim value
+    \param[in]  trim_value: 6-bit IRC48M trim value
       \arg        0x00 - 0x3F
     \param[out] none
     \retval     none
@@ -143,7 +138,6 @@ void ctc_refsource_polarity_config(uint32_t polarity)
                 only one parameter can be selected which is shown as below:
       \arg        CTC_REFSOURCE_GPIO: GPIO is selected
       \arg        CTC_REFSOURCE_LXTAL: LXTAL is selected
-      \arg        CTC_REFSOURCE_USBSOF: USBD_SOF or USBFS_SOF is selected
     \param[out] none
     \retval     none
 */
@@ -247,13 +241,59 @@ uint16_t ctc_counter_reload_value_read(void)
     \brief      read the IRC48M trim value
     \param[in]  none
     \param[out] none
-    \retval     the 8-bit IRC48M trim value
+    \retval     the 6-bit IRC48M trim value
 */
 uint8_t ctc_irc48m_trim_value_read(void)
 {
     uint8_t trim_value = 0U;
     trim_value = (uint8_t)((CTC_CTL0 & CTC_CTL0_TRIMVALUE) >> CTC_TRIMVALUE_OFFSET);
     return (trim_value);
+}
+
+/*!
+    \brief      get CTC flag
+    \param[in]  flag: the CTC flag
+                only one parameter can be selected which is shown as below: 
+      \arg        CTC_FLAG_CKOK: clock trim OK flag
+      \arg        CTC_FLAG_CKWARN: clock trim warning flag 
+      \arg        CTC_FLAG_ERR: error flag 
+      \arg        CTC_FLAG_EREF: expect reference flag
+      \arg        CTC_FLAG_CKERR: clock trim error bit
+      \arg        CTC_FLAG_REFMISS: reference sync pulse miss
+      \arg        CTC_FLAG_TRIMERR: trim value error bit
+    \param[out] none
+    \retval     FlagStatus: SET or RESET
+*/
+FlagStatus ctc_flag_get(uint32_t flag)
+{
+    if(RESET != (CTC_STAT & flag)){
+        return SET;
+    }else{
+        return RESET;
+    }
+}
+
+/*!
+    \brief      clear CTC flag
+    \param[in]  flag: the CTC flag
+                only one parameter can be selected which is shown as below:
+      \arg        CTC_FLAG_CKOK: clock trim OK flag
+      \arg        CTC_FLAG_CKWARN: clock trim warning flag 
+      \arg        CTC_FLAG_ERR: error flag 
+      \arg        CTC_FLAG_EREF: expect reference flag
+      \arg        CTC_FLAG_CKERR: clock trim error bit
+      \arg        CTC_FLAG_REFMISS: reference sync pulse miss
+      \arg        CTC_FLAG_TRIMERR: trim value error bit
+    \param[out] none
+    \retval     none
+*/
+void ctc_flag_clear(uint32_t flag)
+{
+    if(RESET != (flag & CTC_FLAG_MASK)){
+        CTC_INTC |= CTC_INTC_ERRIC;
+    }else{
+        CTC_INTC |= flag;
+    }
 }
 
 /*!
@@ -346,48 +386,3 @@ void ctc_interrupt_flag_clear(uint32_t int_flag)
     }
 }
 
-/*!
-    \brief      get CTC flag
-    \param[in]  flag: the CTC flag
-                only one parameter can be selected which is shown as below: 
-      \arg        CTC_FLAG_CKOK: clock trim OK flag
-      \arg        CTC_FLAG_CKWARN: clock trim warning flag 
-      \arg        CTC_FLAG_ERR: error flag 
-      \arg        CTC_FLAG_EREF: expect reference flag
-      \arg        CTC_FLAG_CKERR: clock trim error bit
-      \arg        CTC_FLAG_REFMISS: reference sync pulse miss
-      \arg        CTC_FLAG_TRIMERR: trim value error bit
-    \param[out] none
-    \retval     FlagStatus: SET or RESET
-*/
-FlagStatus ctc_flag_get(uint32_t flag)
-{
-    if(RESET != (CTC_STAT & flag)){
-        return SET;
-    }else{
-        return RESET;
-    }
-}
-
-/*!
-    \brief      clear CTC flag
-    \param[in]  flag: the CTC flag
-                only one parameter can be selected which is shown as below:
-      \arg        CTC_FLAG_CKOK: clock trim OK flag
-      \arg        CTC_FLAG_CKWARN: clock trim warning flag 
-      \arg        CTC_FLAG_ERR: error flag 
-      \arg        CTC_FLAG_EREF: expect reference flag
-      \arg        CTC_FLAG_CKERR: clock trim error bit
-      \arg        CTC_FLAG_REFMISS: reference sync pulse miss
-      \arg        CTC_FLAG_TRIMERR: trim value error bit
-    \param[out] none
-    \retval     none
-*/
-void ctc_flag_clear(uint32_t flag)
-{
-    if(RESET != (flag & CTC_FLAG_MASK)){
-        CTC_INTC |= CTC_INTC_ERRIC;
-    }else{
-        CTC_INTC |= flag;
-    }
-}

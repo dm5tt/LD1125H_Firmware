@@ -2,10 +2,7 @@
     \file    gd32f30x_adc.c
     \brief   ADC driver
 
-    \version 2017-02-10, V1.0.0, firmware for GD32F30x
-    \version 2018-10-10, V1.1.0, firmware for GD32F30x
-    \version 2018-12-25, V2.0.0, firmware for GD32F30x
-    \version 2020-09-30, V2.1.0, firmware for GD32F30x
+    \version 2023-12-30, V2.2.0, firmware for GD32F30x
 */
 
 /*
@@ -680,7 +677,7 @@ FlagStatus adc_flag_get(uint32_t adc_periph , uint32_t adc_flag)
 */
 void adc_flag_clear(uint32_t adc_periph , uint32_t adc_flag)
 {
-    ADC_STAT(adc_periph) &= ~((uint32_t)adc_flag);
+    ADC_STAT(adc_periph) = ~((uint32_t)adc_flag);
 }
 
 /*!
@@ -739,7 +736,7 @@ FlagStatus adc_interrupt_flag_get(uint32_t adc_periph , uint32_t adc_interrupt)
 */
 void adc_interrupt_flag_clear(uint32_t adc_periph , uint32_t adc_interrupt)
 {
-    ADC_STAT(adc_periph) &= ~((uint32_t)adc_interrupt);
+    ADC_STAT(adc_periph) = ~((uint32_t)adc_interrupt);
 }
 
 /*!
