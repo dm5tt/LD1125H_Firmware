@@ -1,3 +1,0 @@
-/home/had/Dev/GD32F303CDET6_CMake/build/CMakeFiles/CLionGD32F303CG.elf.dir
-/home/had/Dev/GD32F303CDET6_CMake/build/CMakeFiles/edit_cache.dir
-/home/had/Dev/GD32F303CDET6_CMake/build/CMakeFiles/rebuild_cache.dir
