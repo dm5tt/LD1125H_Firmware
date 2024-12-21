@@ -33,7 +33,6 @@ OF SUCH DAMAGE.
 */
 
 #include "gd32f30x_it.h"
-#include "usbd_lld_int.h"
 
 /*!
     \brief      this function handles NMI exception
@@ -94,16 +93,6 @@ void UsageFault_Handler(void)
 }
 
 /*!
-    \brief      this function handles SVC exception
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void SVC_Handler(void)
-{
-}
-
-/*!
     \brief      this function handles DebugMon exception
     \param[in]  none
     \param[out] none
@@ -112,39 +101,3 @@ void SVC_Handler(void)
 void DebugMon_Handler(void)
 {
 }
-
-/*!
-    \brief      this function handles PendSV exception
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void PendSV_Handler(void)
-{
-}
-
-/*!
-    \brief      this function handles USBD interrupt
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void USBD_LP_CAN0_RX0_IRQHandler (void)
-{
-    usbd_isr();
-}
-
-#ifdef USBD_LOWPWR_MODE_ENABLE
-
-/*!
-    \brief      this function handles USBD wakeup interrupt request.
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void USBD_WKUP_IRQHandler (void)
-{
-    exti_interrupt_flag_clear(EXTI_18);
-}
-
-#endif /* USBD_LOWPWR_MODE_ENABLE */

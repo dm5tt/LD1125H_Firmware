@@ -28,6 +28,7 @@ add_compile_options(
     -mcpu=cortex-m4
     -mthumb
     -mthumb-interwork
+    -mfloat-abi=hard
     -ffunction-sections
     -fdata-sections
     -fno-common
@@ -42,6 +43,8 @@ add_compile_options($<$<COMPILE_LANGUAGE:ASM>:-x$<SEMICOLON>assembler-with-cpp>)
 # Include directories
 include_directories(
     Include
+    Drivers/FreeRTOS/include
+    Drivers/FreeRTOS/portable/GCC/ARM_CM4F
     Drivers/GD32F30x_standard_peripheral/Include
     Drivers/CMSIS/
     Drivers/CMSIS/GD/GD32F30x/Include
@@ -62,6 +65,7 @@ set(LINKER_OPTIONS
     -mthumb
     -mthumb-interwork
     -specs=nosys.specs
+    -mfloat-abi=hard
     -T ${LINKER_SCRIPT}
 )
 
@@ -105,7 +109,7 @@ endfunction()
 
 # List of app targets
 set(APP_LIST
-   hello_world 
+   hello_world
     # Add more app names here
 )
 
