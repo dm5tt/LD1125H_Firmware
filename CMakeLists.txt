@@ -65,7 +65,6 @@ set(LINKER_OPTIONS
     -T ${LINKER_SCRIPT}
 )
 
-# Function to add app target
 function(add_app app_name)
     # Set source files for the specific app
     file(GLOB_RECURSE APP_SOURCES
@@ -74,8 +73,15 @@ function(add_app app_name)
         "${CMAKE_SOURCE_DIR}/Drivers/*.*"
     )
 
+    # Include directories for the specific app
+    file(GLOB_RECURSE APP_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/Apps/${app_name}/")
+    list(REMOVE_DUPLICATES APP_INCLUDE_DIRS)
+
     # Define the executable target for the app without .elf suffix
     add_executable(${app_name} ${APP_SOURCES})
+
+    # Add include directories to the target
+    target_include_directories(${app_name} PRIVATE ${APP_INCLUDE_DIRS})
 
     # Linker options
     target_link_options(${app_name} PRIVATE ${LINKER_OPTIONS})
@@ -83,13 +89,12 @@ function(add_app app_name)
     # Output files (HEX and BIN)
     set(HEX_FILE ${PROJECT_BINARY_DIR}/${app_name}.hex)
     set(BIN_FILE ${PROJECT_BINARY_DIR}/${app_name}.bin)
-    set(BIN_FILE ${PROJECT_BINARY_DIR}/${app_name}.bin)
 
     # Post-build commands
     add_custom_command(TARGET ${app_name} POST_BUILD
         COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${app_name}> ${HEX_FILE}
         COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${app_name}> ${BIN_FILE}
-        COMMENT "Generating ${ELF_FILE}, ${HEX_FILE}, and ${BIN_FILE}"
+        COMMENT "Generating ${HEX_FILE} and ${BIN_FILE}"
     )
 
     set_target_properties(${app_name} PROPERTIES
