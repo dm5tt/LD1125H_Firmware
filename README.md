@@ -1,6 +1,10 @@
 # What is this thing?
 
-This a is a cmake'ized template for writing application on the GD32F303CDET6. It contains the Standard Peripheral Library + USBD Lib (untested) and maybe FreeRTOS in the future.
+This is a attempt to write an alternative firmware for the LD1125H FMCW radar to extract raw ADC values from the Echo/Bang signal via high-speed UART.
+
+# Build Targets
+
+<todo>
 
 # How to build?
 
@@ -13,4 +17,8 @@ This a is a cmake'ized template for writing application on the GD32F303CDET6. It
 
 # Credits
 
-This is a friendly fork from https://github.com/djix123/GD32F303CG_CMake
+Template heavily adapted from https://github.com/djix123/GD32F303CG_CMake
+
+Linker Scripts and Startup from https://github.com/cjacker/gd32f30x_firmware_library_gcc_makefile
+
+OpenOCD script https://github.com/gd32-rs/gd32-openocd
