@@ -35,6 +35,8 @@ add_compile_options(
     -fmessage-length=0
     -Og
     -g
+    -Wall
+    -Wextra
 )
 
 # Specific ASM compile option
