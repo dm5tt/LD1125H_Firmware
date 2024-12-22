@@ -4,6 +4,25 @@ This is a attempt to write an alternative firmware for the LD1125H FMCW radar to
 
 The hardware reverse engineering part was done in [this article](https://www.dm5tt.de/2024/12/14/ld1125H-reverse-engineering/).
 
+# How to compile
+
+First prepare CMake
+
+```
+# mkdir build
+# cd build
+# cmake ..
+
+```
+
+Then you can build targets
+
+```
+# make hello_world
+```
+
+which will spit out .elf, .bin and .hex files.
+
 
 # Build Targets
 

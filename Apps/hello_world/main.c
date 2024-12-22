@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "task.h"
@@ -22,7 +21,6 @@ void vTask1(void *pvParameters) {
 int main(void) {
   setup_systick_config();
   setup_uart();
-
 
   setvbuf(stdout, NULL, _IONBF, 0);
 
