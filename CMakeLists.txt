@@ -64,7 +64,7 @@ set(LINKER_OPTIONS
     -mcpu=cortex-m4
     -mthumb
     -mthumb-interwork
-    -specs=nosys.specs
+    --specs=rdimon.specs -lc -lrdimon
     -mfloat-abi=hard
     -T ${LINKER_SCRIPT}
 )
