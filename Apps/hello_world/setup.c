@@ -10,14 +10,12 @@ int _write(int file, char *data, int len) {
     return -1;
   }
 
-  // arbitrary timeout 1000
   for (int i = 0; i < len; i++) {
     usart_data_transmit(USART0, (uint8_t)data[i]);
     while (RESET == usart_flag_get(USART0, USART_FLAG_TBE))
       ;
   }
 
-  // return # of bytes written - as best we can tell
   return len;
 }
 
