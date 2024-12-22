@@ -1,0 +1,38 @@
+name: LD1125H Firmware Builder
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Install ARM GCC toolchain
+      - name: Install ARM GCC Toolchain and CMake
+        run: |
+          sudo apt update
+          sudo apt install -y gcc-arm-none-eabi binutils-arm-none-eabi cmake
+
+      # Create build directory and run CMake
+      - name: Configure and Build
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+
+      # Collect all .bin files
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: binaries
+          path: build/*.bin
+
