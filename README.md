@@ -1,6 +1,6 @@
 # What is this thing?
 
-This is a attempt to write an alternative firmware for the LD1125H FMCW radar to extract raw ADC values from the Echo/Bang signal via high-speed UART.
+This is a attempt of writing an alternative firmware for the LD1125H FMCW radar to extract raw ADC values from the Echo/Bang signal via high-speed UART. 
 
 The hardware reverse engineering part was done in [this article](https://www.dm5tt.de/2024/12/14/ld1125H-reverse-engineering/).
 
@@ -12,7 +12,6 @@ First prepare CMake
 # mkdir build
 # cd build
 # cmake ..
-
 ```
 
 Then you can build targets
@@ -48,15 +47,6 @@ Todo
 ### radar_fmcw_sinus
 
 Todo
-
-# How to build?
-
-```
-# mkdir build
-# cd build
-# cmake ..
-# make hello_world
-```
 
 # Credits
 
