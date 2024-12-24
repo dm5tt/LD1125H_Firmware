@@ -33,12 +33,15 @@ Connect a UART to PA10 (TX) and PA9 (RX) using a FTDI like FT232H at a baudrate 
 
 ### remote_control
 
-Will be the first throw of implementing a easy and cheap TLV command parser. 
-
+Todo
 
 ### radar_cw
 
-Todo
+Idea:
+ - Set the DAC to a static value
+ - Sample the Bang signal at 100kHz
+ - Output it to the serial port using an A/B buffer using  UART DMA TX
+ - Visualize in Python (Spectrum + FFT)
 
 ### radar_fmcw_ramp
 
