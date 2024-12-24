@@ -39,7 +39,7 @@ Todo
 
 Idea:
  - Set the DAC to a static value
- - Sample the Bang signal at 100kHz
+ - Sample the Bang signal at 100kHz with ADC DMA 
  - Output it to the serial port using an A/B buffer using  UART DMA TX
  - Visualize in Python (Spectrum + FFT)
 
