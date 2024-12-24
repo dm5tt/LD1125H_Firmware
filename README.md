@@ -25,7 +25,7 @@ which will spit out .elf, .bin and .hex files.
 
 # Build Targets
 
-### hello_world
+### hello_world ✓
 
 This target is a basic test to verify if the clock configuration, RTOS and UART is working correctly.
 
