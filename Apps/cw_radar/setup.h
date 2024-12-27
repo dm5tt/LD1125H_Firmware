@@ -18,6 +18,6 @@ void setup_timer(void);
 #define ADC_RCU RCU_ADC2
 #define ADC_EXTTRIG_CH ADC2_EXTTRIG_REGULAR_T4_CH0
 
-#define ADC_SAMPLES 1024
+#define ADC_SAMPLES 8192
 
 #endif 

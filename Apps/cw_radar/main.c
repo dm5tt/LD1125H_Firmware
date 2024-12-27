@@ -11,9 +11,10 @@
 #include "gd32f30x.h"
 
 
-volatile uint16_t buffer[ADC_SAMPLES];
-
-
+volatile uint16_t bufferA[ADC_SAMPLES];
+volatile uint16_t bufferB[ADC_SAMPLES];
+volatile uint16_t *currentBuffer = bufferA; // Start with Buffer A
+volatile uint16_t *nextBuffer = bufferB;    // Next buffer to fill
 
 void vTask1(void *pvParameters) {
   (void) pvParameters;

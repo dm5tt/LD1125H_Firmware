@@ -4,7 +4,7 @@
 
 /* retarget the gcc's C library printf function to the USART */
 #include <errno.h>
-#include <sys/unistd.h> 
+#include <sys/unistd.h>
 
 int _write(int file, char *data, int len) {
   if ((file != STDOUT_FILENO) && (file != STDERR_FILENO)) {
@@ -39,8 +39,6 @@ void setup_uart(void) {
   usart_enable(USART0);
 }
 
-extern volatile uint16_t buffer;
-
 void setup_pins() {
 
   /* enable GPIOA clock */
@@ -56,14 +54,19 @@ void setup_pins() {
   gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
 }
 
+dma_parameter_struct dma_init_struct;
+extern volatile uint16_t bufferA[ADC_SAMPLES];
+extern volatile uint16_t bufferB[ADC_SAMPLES]; 
+
+extern volatile uint16_t *currentBuffer;
+extern volatile uint16_t *nextBuffer;
+
 void setup_dma() {
   rcu_periph_clock_enable(RCU_DMA1);
 
-  dma_parameter_struct dma_init_struct;
-
   dma_deinit(DMA1, DMA_CH4);
   dma_init_struct.direction = DMA_PERIPHERAL_TO_MEMORY;
-  dma_init_struct.memory_addr = (uint32_t)(&buffer);
+  dma_init_struct.memory_addr = (uint32_t)currentBuffer;
   dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
   dma_init_struct.memory_width = DMA_MEMORY_WIDTH_16BIT;
   dma_init_struct.number = ADC_SAMPLES;
@@ -120,6 +123,7 @@ void setup_timer() {
 
   timer_deinit(ADC_PWM_TMER);
 
+  /* ADC frequency: 50kHz */
   timer_initpara.prescaler = 23;
   timer_initpara.alignedmode = TIMER_COUNTER_EDGE;
   timer_initpara.counterdirection = TIMER_COUNTER_UP;

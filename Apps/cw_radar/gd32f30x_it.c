@@ -98,13 +98,33 @@ void UsageFault_Handler(void) {
 */
 void DebugMon_Handler(void) {}
 
-volatile uint64_t data = 0;
+extern volatile uint16_t bufferA[ADC_SAMPLES];
+extern volatile uint16_t bufferB[ADC_SAMPLES]; 
 
-void DMA1_Channel3_4_IRQHandler(void)
-{
-    if(dma_interrupt_flag_get(DMA1,DMA_CH4, DMA_INT_FLAG_FTF))
-    {     
-        dma_interrupt_flag_clear(DMA1,DMA_CH4, DMA_INT_FLAG_G);
+extern volatile uint16_t *currentBuffer;
+extern volatile uint16_t *nextBuffer;
+
+extern dma_parameter_struct dma_init_struct;
+
+void DMA1_Channel3_4_IRQHandler(void) {
+  // Check if DMA transfer is complete
+  if (dma_interrupt_flag_get(DMA1, DMA_CH4, DMA_INT_FLAG_FTF)) {
+    // Clear the interrupt flag
+    dma_interrupt_flag_clear(DMA1, DMA_CH4, DMA_INT_FLAG_FTF);
+
+    // Toggle between buffers
+    if (currentBuffer == bufferA) {
+      currentBuffer = bufferB; // Switch to Buffer B
+      nextBuffer = bufferA;    // Next buffer to fill is Buffer A
+    } else {
+      currentBuffer = bufferA; // Switch to Buffer A
+      nextBuffer = bufferB;    // Next buffer to fill is Buffer B
     }
-  
+
+    // Update DMA memory address to the new buffer
+    dma_channel_disable(DMA1, DMA_CH4); // Disable DMA channel temporarily
+    dma_init_struct.memory_addr = (uint32_t)currentBuffer; // Update address
+    dma_init(DMA1, DMA_CH4, &dma_init_struct);             // Reconfigure DMA
+    dma_channel_enable(DMA1, DMA_CH4); // Re-enable DMA channel
+  }
 }
