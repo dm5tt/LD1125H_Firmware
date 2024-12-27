@@ -98,6 +98,8 @@ void UsageFault_Handler(void) {
 */
 void DebugMon_Handler(void) {}
 
+volatile uint64_t data = 0;
+
 void DMA1_Channel3_4_IRQHandler(void)
 {
     if(dma_interrupt_flag_get(DMA1,DMA_CH4, DMA_INT_FLAG_FTF))

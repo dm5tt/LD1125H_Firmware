@@ -4,7 +4,7 @@
 
 /* retarget the gcc's C library printf function to the USART */
 #include <errno.h>
-#include <sys/unistd.h> // STDOUT_FILENO, STDERR_FILENO
+#include <sys/unistd.h> 
 
 int _write(int file, char *data, int len) {
   if ((file != STDOUT_FILENO) && (file != STDERR_FILENO)) {
@@ -22,21 +22,16 @@ int _write(int file, char *data, int len) {
 }
 
 void setup_systick_config(void) {
-  /* setup systick timer for 1000Hz interrupts */
   if (SysTick_Config(SystemCoreClock / 1000U)) {
-    /* capture error */
     while (1) {
     }
   }
-  /* configure the systick handler priority */
   NVIC_SetPriority(SysTick_IRQn, 0x00U);
 }
 
 void setup_uart(void) {
-  /* enable USART clock */
   rcu_periph_clock_enable(RCU_USART0);
 
-  /* USART configure */
   usart_deinit(USART0);
   usart_baudrate_set(USART0, 4000000U);
   usart_receive_config(USART0, USART_RECEIVE_ENABLE);
@@ -44,18 +39,20 @@ void setup_uart(void) {
   usart_enable(USART0);
 }
 
-extern volatile uint32_t laser_fre;
+extern volatile uint16_t buffer;
 
 void setup_pins() {
 
   /* enable GPIOA clock */
   rcu_periph_clock_enable(RCU_GPIOA);
+
+  /* PA0 -> ADC2, CH0*/
   gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_0);
 
-    /* connect port to USARTx_Tx */
+  /* PA9 ->  USARTx_Tx */
   gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_9);
 
-  /* connect port to USARTx_Rx */
+  /* PA10 -> USARTx_Rx */
   gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
 }
 
@@ -66,10 +63,10 @@ void setup_dma() {
 
   dma_deinit(DMA1, DMA_CH4);
   dma_init_struct.direction = DMA_PERIPHERAL_TO_MEMORY;
-  dma_init_struct.memory_addr = (uint32_t)(&laser_fre);
+  dma_init_struct.memory_addr = (uint32_t)(&buffer);
   dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
   dma_init_struct.memory_width = DMA_MEMORY_WIDTH_16BIT;
-  dma_init_struct.number = LASWER_FRE_NUME * ADC_CHANNEL_NUMER;
+  dma_init_struct.number = ADC_SAMPLES;
   dma_init_struct.periph_addr = (uint32_t)(&ADC_RDATA(ADC_NUM_CH));
   dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
   dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_16BIT;
@@ -85,14 +82,13 @@ void setup_dma() {
 }
 
 void setup_adc() {
-  /* enable ADC2 clock */
   rcu_periph_clock_enable(ADC_RCU);
 
-  /* config ADC clock */
   rcu_adc_clock_config(RCU_CKADC_CKAPB2_DIV6);
 
   adc_deinit(ADC_NUM_CH);
 
+  adc_special_function_config(ADC_NUM_CH, ADC_CONTINUOUS_MODE, DISABLE);
   adc_special_function_config(ADC_NUM_CH, ADC_SCAN_MODE, DISABLE);
 
   adc_channel_length_config(ADC_NUM_CH, ADC_REGULAR_CHANNEL, 1);
@@ -117,7 +113,6 @@ void setup_adc() {
 }
 
 void setup_timer() {
-  /* enable TIMER0 clock */
   rcu_periph_clock_enable(ADC_PWM_TMER_RCU);
 
   timer_parameter_struct timer_initpara;

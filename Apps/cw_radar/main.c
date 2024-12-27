@@ -11,11 +11,12 @@
 #include "gd32f30x.h"
 
 
-volatile uint32_t laser_fre[LASWER_FRE_NUME];
+volatile uint16_t buffer[ADC_SAMPLES];
 
 
 
 void vTask1(void *pvParameters) {
+  (void) pvParameters;
 
   for (;;) {
     printf("\n\ra usart transmit test example!\n\r");
