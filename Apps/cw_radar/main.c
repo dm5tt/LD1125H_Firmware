@@ -20,19 +20,13 @@ void vTask1(void *pvParameters) {
 
   uint16_t value = 0;
 
-          dac_data_set(DAC0, DAC_OUT0, DAC_ALIGN_12B_R, 2000);
-        /* enable DAC software trigger */
-        dac_software_trigger_enable(DAC0, DAC_OUT0);
+  /* Set stativ value */
+  dac_data_set(DAC0, DAC_OUT0, DAC_ALIGN_12B_R, 2000);
+  dac_software_trigger_enable(DAC0, DAC_OUT0);
 
   for (;;) {
 
-
-        
-        vTaskDelay(100);
-
-
-
-
+    vTaskDelay(100);
   }
 }
 
@@ -53,7 +47,7 @@ int main(void) {
 
   xTaskCreate(vTask1,   // pointer to the task function
               "Task 1", // task name
-              512,       // stack size in words
+              512,      // stack size in words
               NULL,     // stack parameter (not used here)
               1,        // priority
               NULL);    // task handle (not used)

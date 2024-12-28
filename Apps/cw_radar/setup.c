@@ -54,26 +54,25 @@ void setup_pins() {
   gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
 
   /* PA4, PA5 -> DAC Output */
-    gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_50MHZ, GPIO_PIN_4);
-
-    }
+  gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_50MHZ, GPIO_PIN_4);
+}
 
 void setup_dac() {
-      rcu_periph_clock_enable(RCU_DAC);
+  rcu_periph_clock_enable(RCU_DAC);
 
-    /* initialize DAC */
-    dac_deinit(DAC0);
-    /* DAC trigger config */
-    dac_trigger_source_config(DAC0, DAC_OUT0, DAC_TRIGGER_SOFTWARE);
-    /* DAC trigger enable */
-    dac_trigger_enable(DAC0, DAC_OUT0);
-    /* DAC wave mode config */
-    dac_wave_mode_config(DAC0, DAC_OUT0, DAC_WAVE_DISABLE);
-    /* DAC output buffer config */
-    dac_output_buffer_enable(DAC0, DAC_OUT0);
+  /* initialize DAC */
+  dac_deinit(DAC0);
+  /* DAC trigger config */
+  dac_trigger_source_config(DAC0, DAC_OUT0, DAC_TRIGGER_SOFTWARE);
+  /* DAC trigger enable */
+  dac_trigger_enable(DAC0, DAC_OUT0);
+  /* DAC wave mode config */
+  dac_wave_mode_config(DAC0, DAC_OUT0, DAC_WAVE_DISABLE);
+  /* DAC output buffer config */
+  dac_output_buffer_enable(DAC0, DAC_OUT0);
 
-    /* DAC enable */
-    dac_enable(DAC0, DAC_OUT0);
+  /* DAC enable */
+  dac_enable(DAC0, DAC_OUT0);
 }
 
 dma_parameter_struct dma_init_struct;
