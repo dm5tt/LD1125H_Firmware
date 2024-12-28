@@ -24,8 +24,9 @@ void vTask1(void *pvParameters) {
   dac_data_set(DAC0, DAC_OUT0, DAC_ALIGN_12B_R, 2000);
   dac_software_trigger_enable(DAC0, DAC_OUT0);
 
-  for (;;) {
 
+  /* Everything happens in DMA and interrupts.*/
+  for (;;) {
     vTaskDelay(100);
   }
 }
@@ -40,7 +41,8 @@ int main(void) {
   setup_timer();
   setup_dma();
 
-  printf("XXXXXXX");
+  /* That's very ugly - but we use this printf() as a preamble within our Python application */
+  printf("XXXXXXX");  
   timer_enable(ADC_PWM_TMER);
 
   setvbuf(stdout, NULL, _IONBF, 0);

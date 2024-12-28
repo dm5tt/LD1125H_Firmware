@@ -109,8 +109,6 @@ extern dma_parameter_struct dma_init_struct;
 void DMA1_Channel3_4_IRQHandler(void) {
   // Check if DMA transfer is complete
   if (dma_interrupt_flag_get(DMA1, DMA_CH4, DMA_INT_FLAG_FTF)) {
-    // Clear the interrupt flag
-
     // Toggle between buffers
     if (currentBuffer == bufferA) {
       currentBuffer = bufferB; // Switch to Buffer B

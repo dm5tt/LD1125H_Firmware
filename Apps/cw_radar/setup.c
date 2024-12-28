@@ -60,18 +60,12 @@ void setup_pins() {
 void setup_dac() {
   rcu_periph_clock_enable(RCU_DAC);
 
-  /* initialize DAC */
   dac_deinit(DAC0);
-  /* DAC trigger config */
   dac_trigger_source_config(DAC0, DAC_OUT0, DAC_TRIGGER_SOFTWARE);
-  /* DAC trigger enable */
   dac_trigger_enable(DAC0, DAC_OUT0);
-  /* DAC wave mode config */
   dac_wave_mode_config(DAC0, DAC_OUT0, DAC_WAVE_DISABLE);
-  /* DAC output buffer config */
   dac_output_buffer_enable(DAC0, DAC_OUT0);
 
-  /* DAC enable */
   dac_enable(DAC0, DAC_OUT0);
 }
 
@@ -98,14 +92,11 @@ void setup_dma() {
   dma_init_struct.priority = DMA_PRIORITY_HIGH;
   dma_init(DMA0, DMA_CH3, &dma_init_struct);
 
-  /* configure DMA mode */
   dma_circulation_disable(DMA0, DMA_CH3);
   dma_memory_to_memory_disable(DMA0, DMA_CH3);
 
-  /* enable USART DMA for transmission */
   usart_dma_transmit_config(USART0, USART_TRANSMIT_DMA_ENABLE);
 
-  /* ADC */
   rcu_periph_clock_enable(RCU_DMA1);
   dma_deinit(DMA1, DMA_CH4);
   dma_init_struct.direction = DMA_PERIPHERAL_TO_MEMORY;
