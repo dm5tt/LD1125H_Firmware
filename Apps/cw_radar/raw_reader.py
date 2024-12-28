@@ -27,6 +27,8 @@ def serial_reader(port, baudrate, preamble, samples_per_frame, data_queue, stop_
                     data = ser.read(2)
                     if len(data) == 2:
                         value = struct.unpack('<H', data)[0]
+                        # Nur die unteren 12 Bit verwenden
+                        value &= 0x0FFF
                         frame_data.append(value)
                     else:
                         print("Warnung: Unvollständige Daten empfangen")
@@ -66,11 +68,14 @@ def main():
     def update(frame):
         if not data_queue.empty():
             frame_data = np.array(data_queue.get()) - np.mean(data_queue.get())  # Gleichstromanteil entfernen
+            # Normalisierung auf [0, 1] für 12 Bit Daten
+            frame_data = frame_data / 4095.0
             fft_result = np.abs(np.fft.rfft(frame_data)) / samples_per_frame
             line.set_ydata(fft_result)
         return line,
 
     ani = FuncAnimation(fig, update, interval=1000/fps, blit=True)
+
     try:
         plt.show()
     finally:
@@ -79,3 +84,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
