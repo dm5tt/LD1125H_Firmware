@@ -4,6 +4,7 @@
 void setup_systick_config(void);
 void setup_uart(void);
 void setup_adc(void);
+void setup_dac(void);
 void setup_dma(void);
 void setup_pins(void);
 void setup_timer(void);

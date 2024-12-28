@@ -52,6 +52,28 @@ void setup_pins() {
 
   /* PA10 -> USARTx_Rx */
   gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
+
+  /* PA4, PA5 -> DAC Output */
+    gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_50MHZ, GPIO_PIN_4);
+
+    }
+
+void setup_dac() {
+      rcu_periph_clock_enable(RCU_DAC);
+
+    /* initialize DAC */
+    dac_deinit(DAC0);
+    /* DAC trigger config */
+    dac_trigger_source_config(DAC0, DAC_OUT0, DAC_TRIGGER_SOFTWARE);
+    /* DAC trigger enable */
+    dac_trigger_enable(DAC0, DAC_OUT0);
+    /* DAC wave mode config */
+    dac_wave_mode_config(DAC0, DAC_OUT0, DAC_WAVE_DISABLE);
+    /* DAC output buffer config */
+    dac_output_buffer_enable(DAC0, DAC_OUT0);
+
+    /* DAC enable */
+    dac_enable(DAC0, DAC_OUT0);
 }
 
 dma_parameter_struct dma_init_struct;
@@ -70,7 +92,7 @@ void setup_dma() {
   dma_init_struct.memory_addr = (uint32_t)nextBuffer;
   dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
   dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
-  dma_init_struct.number = ADC_SAMPLES*2;
+  dma_init_struct.number = ADC_SAMPLES * 2;
   dma_init_struct.periph_addr = (uint32_t)(&USART_DATA(USART0));
   dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
   dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
@@ -119,7 +141,7 @@ void setup_adc() {
   adc_channel_length_config(ADC_NUM_CH, ADC_REGULAR_CHANNEL, 1);
 
   adc_regular_channel_config(ADC_NUM_CH, 0, ADC_CHANNEL_0,
-                             ADC_SAMPLETIME_55POINT5);
+                             ADC_SAMPLETIME_1POINT5);
 
   adc_external_trigger_config(ADC_NUM_CH, ADC_REGULAR_CHANNEL, ENABLE);
 
