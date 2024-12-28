@@ -112,6 +112,7 @@ endfunction()
 # List of app targets
 set(APP_LIST
    hello_world
+   cw_radar
     # Add more app names here
 )
 

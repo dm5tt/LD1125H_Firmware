@@ -19,6 +19,25 @@
                 "monitor reset halt",
                 "load"
             ]
+        },
+        {
+            "name": "Debug cw_radar",
+            "type": "cortex-debug",
+            "request": "launch",
+            "executable": "${workspaceFolder}/build/cw_radar.elf",  // Pfad zur .elf-Datei für hello_world
+            "cwd": "${workspaceFolder}",
+            "servertype": "openocd",  // Ändern Sie den Server-Typ auf "gdb"
+            "interface": "swd",
+            "device": "gd32f303cct6",  // Mikrocontroller
+            "svdFile": "${workspaceFolder}/Shared/gd32f303.svd",  // SVD-Datei für die Peripherie-Ansicht
+            "gdbPath": "/usr/bin/gdb",  // Alternative für explizites GDB-Pfad
+            "configFiles": ["interface/stlink.cfg", "${workspaceFolder}/Shared/gd32f30x.cfg"],
+            "runToEntryPoint": "main",
+            "preLaunchTask": "Build",  // Build-Task für hello_world
+            "postLaunchCommands": [
+                "monitor reset halt",
+                "load"
+            ]
         }
     ]
 }
