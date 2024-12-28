@@ -35,13 +35,14 @@ Connect a UART to PA10 (TX) and PA9 (RX) using a FTDI like FT232H at a baudrate 
 
 Todo
 
-### radar_cw
+### cw_radar ✓
 
-Idea:
  - Set the DAC to a static value
- - Sample the Bang signal at 100kHz with ADC DMA 
+ - Sample the Bang signal at 50kHz with ADC DMA 
  - Output it to the serial port using an A/B buffer using  UART DMA TX
- - Visualize in Python (Spectrum + FFT)
+ - Visualize in Python (FFT)
+
+[LD1125H shows the BANG signal of a spinning fan](Docs/LD1125H_CW_Radar_FAN.mp4)
 
 ### radar_fmcw_ramp
 
