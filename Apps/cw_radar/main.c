@@ -20,7 +20,7 @@ void vTask1(void *pvParameters) {
   (void) pvParameters;
 
   for (;;) {
-    printf("\n\ra usart transmit test example!\n\r");
+//    printf("\n\ra usart transmit test example!\n\r");
     vTaskDelay(1000);
   }
 }
@@ -34,6 +34,7 @@ int main(void) {
   setup_adc();
   setup_timer();
 
+  printf("XXXXXXX");
   timer_enable(ADC_PWM_TMER);
 
   setvbuf(stdout, NULL, _IONBF, 0);

@@ -33,7 +33,7 @@ void setup_uart(void) {
   rcu_periph_clock_enable(RCU_USART0);
 
   usart_deinit(USART0);
-  usart_baudrate_set(USART0, 4000000U);
+  usart_baudrate_set(USART0, 2000000U);
   usart_receive_config(USART0, USART_RECEIVE_ENABLE);
   usart_transmit_config(USART0, USART_TRANSMIT_ENABLE);
   usart_enable(USART0);
@@ -56,14 +56,36 @@ void setup_pins() {
 
 dma_parameter_struct dma_init_struct;
 extern volatile uint16_t bufferA[ADC_SAMPLES];
-extern volatile uint16_t bufferB[ADC_SAMPLES]; 
+extern volatile uint16_t bufferB[ADC_SAMPLES];
 
 extern volatile uint16_t *currentBuffer;
 extern volatile uint16_t *nextBuffer;
 
 void setup_dma() {
-  rcu_periph_clock_enable(RCU_DMA1);
+  dma_parameter_struct dma_init_struct;
 
+  rcu_periph_clock_enable(RCU_DMA0);
+  dma_deinit(DMA0, DMA_CH3);
+  dma_init_struct.direction = DMA_MEMORY_TO_PERIPHERAL;
+  dma_init_struct.memory_addr = (uint32_t)nextBuffer;
+  dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
+  dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
+  dma_init_struct.number = ADC_SAMPLES*2;
+  dma_init_struct.periph_addr = (uint32_t)(&USART_DATA(USART0));
+  dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
+  dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
+  dma_init_struct.priority = DMA_PRIORITY_HIGH;
+  dma_init(DMA0, DMA_CH3, &dma_init_struct);
+
+  /* configure DMA mode */
+  dma_circulation_disable(DMA0, DMA_CH3);
+  dma_memory_to_memory_disable(DMA0, DMA_CH3);
+
+  /* enable USART DMA for transmission */
+  usart_dma_transmit_config(USART0, USART_TRANSMIT_DMA_ENABLE);
+
+  /* ADC */
+  rcu_periph_clock_enable(RCU_DMA1);
   dma_deinit(DMA1, DMA_CH4);
   dma_init_struct.direction = DMA_PERIPHERAL_TO_MEMORY;
   dma_init_struct.memory_addr = (uint32_t)currentBuffer;
