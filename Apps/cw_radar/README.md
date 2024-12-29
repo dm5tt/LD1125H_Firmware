@@ -22,3 +22,10 @@ Beware: no auto-scaling was implemented. You must use the Zoom button.
 1. Start the Python application first. It will wait for the preamble.
 
 2. Flash and run the firmware LD1125H
+
+
+# Limitations
+
+Sometimes the Python script hickups and it losses the track of the raw frames.
+
+Maybe someone should implement a small TLV protocol here to properly catch frame start and verify its CRC.
