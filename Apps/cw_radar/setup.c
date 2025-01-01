@@ -53,7 +53,7 @@ void setup_pins() {
   /* PA10 -> USARTx_Rx */
   gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
 
-  /* PA4, PA5 -> DAC Output */
+  /* PA4 -> DAC Output */
   gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_50MHZ, GPIO_PIN_4);
 }
 
