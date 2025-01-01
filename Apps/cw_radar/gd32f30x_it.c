@@ -98,36 +98,30 @@ void UsageFault_Handler(void) {
 */
 void DebugMon_Handler(void) {}
 
-extern volatile uint16_t bufferA[ADC_SAMPLES];
-extern volatile uint16_t bufferB[ADC_SAMPLES];
-
-extern volatile uint16_t *currentBuffer;
-extern volatile uint16_t *nextBuffer;
-
-extern dma_parameter_struct dma_init_struct;
+extern volatile uint16_t buffer[ADC_SAMPLES];
 
 void DMA1_Channel3_4_IRQHandler(void) {
+
   // Check if DMA transfer is complete
-  if (dma_interrupt_flag_get(DMA1, DMA_CH4, DMA_INT_FLAG_FTF)) {
-    // Toggle between buffers
-    if (currentBuffer == bufferA) {
-      currentBuffer = bufferB; // Switch to Buffer B
-      nextBuffer = bufferA;    // Next buffer to fill is Buffer A
-    } else {
-      currentBuffer = bufferA; // Switch to Buffer A
-      nextBuffer = bufferB;    // Next buffer to fill is Buffer B
-    }
+  if (dma_interrupt_flag_get(DMA1, DMA_CH4, DMA_INT_FLAG_FTF) == SET) {
+    dma_flag_clear(DMA1, DMA_CH4, DMA_INT_FLAG_FTF);
 
     dma_channel_disable(DMA0, DMA_CH3);
-    dma_channel_disable(DMA1, DMA_CH4);
-
-    dma_memory_address_config(DMA0, DMA_CH3, (uint32_t)nextBuffer);
-    dma_memory_address_config(DMA1, DMA_CH4, (uint32_t)currentBuffer);
-
-    dma_interrupt_flag_clear(DMA1, DMA_CH4, DMA_INT_FLAG_FTF);
-    dma_flag_clear(DMA0, DMA_CH3, DMA_FLAG_FTF);
+    dma_memory_address_config(DMA0, DMA_CH3, (uint32_t)(&buffer[0]));
 
     dma_channel_enable(DMA0, DMA_CH3);
-    dma_channel_enable(DMA1, DMA_CH4);
+
+    return;
+  }
+
+  if (dma_interrupt_flag_get(DMA1, DMA_CH4, DMA_INT_FLAG_HTF) == SET) {
+
+    dma_flag_clear(DMA1, DMA_CH4, DMA_INT_FLAG_HTF);
+    dma_channel_disable(DMA0, DMA_CH3);
+    dma_memory_address_config(DMA0, DMA_CH3,
+                              (uint32_t)&buffer[ADC_SAMPLES / 2]);
+    dma_channel_enable(DMA0, DMA_CH3);
+
+    return;
   }
 }

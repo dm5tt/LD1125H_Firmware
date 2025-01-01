@@ -10,16 +10,12 @@
 
 #include "gd32f30x.h"
 
-volatile uint16_t bufferA[ADC_SAMPLES] = {0};
-volatile uint16_t bufferB[ADC_SAMPLES] = {0};
-volatile uint16_t *currentBuffer = bufferA; // Start with Buffer A
-volatile uint16_t *nextBuffer = bufferB;    // Next buffer to fill
+volatile uint16_t buffer[ADC_SAMPLES] = {0};
+
 
 /* Task nor RTOS really needed here. Did it anyway because it was cheaply adapted from hello_world */
 void vTask1(void *pvParameters) {
   (void)pvParameters;
-
-  uint16_t value = 0;
 
   /* Set DAC to a static value */
   dac_data_set(DAC0, DAC_OUT0, DAC_ALIGN_12B_R, 2000);

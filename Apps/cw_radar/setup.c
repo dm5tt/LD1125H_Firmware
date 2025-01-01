@@ -70,11 +70,7 @@ void setup_dac() {
 }
 
 dma_parameter_struct dma_init_struct;
-extern volatile uint16_t bufferA[ADC_SAMPLES];
-extern volatile uint16_t bufferB[ADC_SAMPLES];
-
-extern volatile uint16_t *currentBuffer;
-extern volatile uint16_t *nextBuffer;
+extern volatile uint16_t buffer[ADC_SAMPLES];
 
 void setup_dma() {
   dma_parameter_struct dma_init_struct;
@@ -82,10 +78,10 @@ void setup_dma() {
   rcu_periph_clock_enable(RCU_DMA0);
   dma_deinit(DMA0, DMA_CH3);
   dma_init_struct.direction = DMA_MEMORY_TO_PERIPHERAL;
-  dma_init_struct.memory_addr = (uint32_t)nextBuffer;
+  dma_init_struct.memory_addr = (uint32_t)buffer;
   dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
-  dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
-  dma_init_struct.number = ADC_SAMPLES * 2;
+  dma_init_struct.memory_width = DMA_MEMORY_WIDTH_16BIT;
+  dma_init_struct.number = ADC_SAMPLES / 2;
   dma_init_struct.periph_addr = (uint32_t)(&USART_DATA(USART0));
   dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
   dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
@@ -100,7 +96,7 @@ void setup_dma() {
   rcu_periph_clock_enable(RCU_DMA1);
   dma_deinit(DMA1, DMA_CH4);
   dma_init_struct.direction = DMA_PERIPHERAL_TO_MEMORY;
-  dma_init_struct.memory_addr = (uint32_t)currentBuffer;
+  dma_init_struct.memory_addr = (uint32_t)buffer;
   dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
   dma_init_struct.memory_width = DMA_MEMORY_WIDTH_16BIT;
   dma_init_struct.number = ADC_SAMPLES;
@@ -113,6 +109,7 @@ void setup_dma() {
   dma_circulation_enable(DMA1, DMA_CH4);
 
   nvic_irq_enable(DMA1_Channel3_Channel4_IRQn, 0, 1);
+  dma_interrupt_enable(DMA1, DMA_CH4, DMA_INT_HTF);
   dma_interrupt_enable(DMA1, DMA_CH4, DMA_INT_FTF);
 
   dma_channel_enable(DMA1, DMA_CH4);
