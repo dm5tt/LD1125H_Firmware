@@ -15,17 +15,17 @@ volatile uint16_t bufferB[ADC_SAMPLES] = {0};
 volatile uint16_t *currentBuffer = bufferA; // Start with Buffer A
 volatile uint16_t *nextBuffer = bufferB;    // Next buffer to fill
 
+/* Task nor RTOS really needed here. Did it anyway because it was cheaply adapted from hello_world */
 void vTask1(void *pvParameters) {
   (void)pvParameters;
 
   uint16_t value = 0;
 
-  /* Set stativ value */
+  /* Set DAC to a static value */
   dac_data_set(DAC0, DAC_OUT0, DAC_ALIGN_12B_R, 2000);
   dac_software_trigger_enable(DAC0, DAC_OUT0);
 
-
-  /* Everything happens in DMA and interrupts.*/
+  /* Everything happens in DMA and interrupts. Do nothing here.*/
   for (;;) {
     vTaskDelay(100);
   }
