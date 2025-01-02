@@ -1,6 +1,6 @@
 # What is this thing?
 
-This application (cw_radar) set up a basic CW radar using the LD1125H
+This application (cw_radar) sets up a basic CW radar using the LD1125H
 
 # How?
 
@@ -26,6 +26,6 @@ Beware: no auto-scaling was implemented. You must use the Zoom button.
 
 # Limitations
 
-Sometimes the Python script hickups and it losses the track of the raw frames.
+There's no frame synchronization implemented. The Python script can and will hickup. 
 
-Maybe someone should implement a small TLV protocol here to properly catch frame start and verify its CRC.
+We also only get the I or Q signal of the FMCW IC - not both. So the counterpart must be emulated using a Hilbert or something else.
