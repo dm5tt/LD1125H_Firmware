@@ -34,7 +34,7 @@ Connect a UART to PA10 (TX) and PA9 (RX) using a FTDI like FT232H at a baudrate 
 ### cw_radar ✓
 
  - Set the DAC to a static value
- - Sample the Bang signal at 50kHz with ADC DMA into an A/B buffer
+ - Sample the Bang signal at 50kHz with ADC DMA into a double buffer
  - Output it to the serial port buffer using  UART DMA TX
  - Visualize in Python (FFT)
 
