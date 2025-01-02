@@ -6,7 +6,7 @@ This application (cw_radar) set up a basic CW radar using the LD1125H
 
 1. Set the DAC to a static value
 2. Sets a timer to 50kHz which triggers the ADC
-3. The ADC reads out the Bang/Echo signal and writes it into an A/B buffer using DMA
+3. The ADC reads out the Bang/Echo signal and writes it into a double buffer using DMA
 4. The UART write these buffer to the interface using DMA
 
 The RTOS is not (= only a vTaskDelay) being used here.
