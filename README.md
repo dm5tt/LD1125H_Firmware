@@ -43,6 +43,7 @@ Connect a UART to PA10 (TX) and PA9 (RX) using a FTDI like FT232H at a baudrate 
 
 [LD1125H shows the FFT of the Bang signal of a spinning fan](Docs/LD1125H_CW_Radar_FAN.mp4)
 
+Beware: there was a slight offset in the Python windows when I zoomed into the signals. I really starts a 0 and then increases with direct relation to the RPM of the fan.
 
 # Credits
 
