@@ -38,6 +38,8 @@ Connect a UART to PA10 (TX) and PA9 (RX) using a FTDI like FT232H at a baudrate 
  - Output it to the serial port buffer using  UART DMA TX
  - Visualize in Python (FFT)
 
+# Example 
+
 ![vlcsnap-2024-12-28-21h09m07s086](https://github.com/user-attachments/assets/9ca926fc-e758-4770-bf42-3fb6cb9ba38e)
 
 
