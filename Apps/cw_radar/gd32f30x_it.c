@@ -33,7 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "gd32f30x_it.h"
+#include "frame.h"
 #include "setup.h"
+
 /*!
     \brief      this function handles NMI exception
     \param[in]  none
@@ -99,6 +101,7 @@ void UsageFault_Handler(void) {
 void DebugMon_Handler(void) {}
 
 extern volatile uint16_t buffer[ADC_SAMPLES];
+extern volatile uint8_t frameBuffer[FRAME_BUFFER_SIZE];
 
 void DMA1_Channel3_4_IRQHandler(void) {
 
@@ -107,7 +110,11 @@ void DMA1_Channel3_4_IRQHandler(void) {
     dma_flag_clear(DMA1, DMA_CH4, DMA_INT_FLAG_FTF);
 
     dma_channel_disable(DMA0, DMA_CH3);
-    dma_memory_address_config(DMA0, DMA_CH3, (uint32_t)(&buffer[0]));
+
+    frame_build((uint8_t *)buffer, HALF_PAYLOAD_SIZE * sizeof(uint16_t),
+                frameBuffer, FRAME_BUFFER_SIZE);
+
+    dma_memory_address_config(DMA0, DMA_CH3, (uint32_t)frameBuffer);
 
     dma_channel_enable(DMA0, DMA_CH3);
 
@@ -118,8 +125,12 @@ void DMA1_Channel3_4_IRQHandler(void) {
 
     dma_flag_clear(DMA1, DMA_CH4, DMA_INT_FLAG_HTF);
     dma_channel_disable(DMA0, DMA_CH3);
-    dma_memory_address_config(DMA0, DMA_CH3,
-                              (uint32_t)&buffer[ADC_SAMPLES / 2]);
+
+    frame_build((uint8_t *)&buffer[HALF_PAYLOAD_SIZE],
+                HALF_PAYLOAD_SIZE * sizeof(uint16_t), frameBuffer,
+                FRAME_BUFFER_SIZE);
+
+    dma_memory_address_config(DMA0, DMA_CH3, (uint32_t)frameBuffer);
     dma_channel_enable(DMA0, DMA_CH3);
 
     return;

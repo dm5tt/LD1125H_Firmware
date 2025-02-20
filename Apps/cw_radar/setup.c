@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <sys/unistd.h>
 
+#include "frame.h"
+
 int _write(int file, char *data, int len) {
   if ((file != STDOUT_FILENO) && (file != STDERR_FILENO)) {
     errno = EBADF;
@@ -33,7 +35,7 @@ void setup_uart(void) {
   rcu_periph_clock_enable(RCU_USART0);
 
   usart_deinit(USART0);
-  usart_baudrate_set(USART0, 2000000U);
+  usart_baudrate_set(USART0, 4000000U);
   usart_receive_config(USART0, USART_RECEIVE_ENABLE);
   usart_transmit_config(USART0, USART_TRANSMIT_ENABLE);
   usart_enable(USART0);
@@ -48,13 +50,13 @@ void setup_pins() {
   gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_0);
 
   /* PA9 ->  USARTx_Tx */
-  gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_9);
+  gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_MAX, GPIO_PIN_9);
 
   /* PA10 -> USARTx_Rx */
-  gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
+  gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_MAX, GPIO_PIN_10);
 
   /* PA4 -> DAC Output */
-  gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_50MHZ, GPIO_PIN_4);
+  gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_4);
 }
 
 void setup_dac() {
@@ -71,6 +73,7 @@ void setup_dac() {
 
 dma_parameter_struct dma_init_struct;
 extern volatile uint16_t buffer[ADC_SAMPLES];
+extern uint8_t frameBuffer[FRAME_BUFFER_SIZE];
 
 void setup_dma() {
   dma_parameter_struct dma_init_struct;
@@ -78,10 +81,10 @@ void setup_dma() {
   rcu_periph_clock_enable(RCU_DMA0);
   dma_deinit(DMA0, DMA_CH3);
   dma_init_struct.direction = DMA_MEMORY_TO_PERIPHERAL;
-  dma_init_struct.memory_addr = (uint32_t)buffer;
+  dma_init_struct.memory_addr = (uint32_t)frameBuffer;
   dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
-  dma_init_struct.memory_width = DMA_MEMORY_WIDTH_16BIT;
-  dma_init_struct.number = ADC_SAMPLES / 2;
+  dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
+  dma_init_struct.number = FRAME_BUFFER_SIZE;
   dma_init_struct.periph_addr = (uint32_t)(&USART_DATA(USART0));
   dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
   dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
@@ -99,10 +102,10 @@ void setup_dma() {
   dma_init_struct.memory_addr = (uint32_t)buffer;
   dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;
   dma_init_struct.memory_width = DMA_MEMORY_WIDTH_16BIT;
-  dma_init_struct.number = ADC_SAMPLES;
+  dma_init_struct.number = FRAME_BUFFER_SIZE;
   dma_init_struct.periph_addr = (uint32_t)(&ADC_RDATA(ADC_NUM_CH));
   dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;
-  dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_16BIT;
+  dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
   dma_init_struct.priority = DMA_PRIORITY_ULTRA_HIGH;
   dma_init(DMA1, DMA_CH4, &dma_init_struct);
 
