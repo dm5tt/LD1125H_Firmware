@@ -15,9 +15,7 @@ The RTOS is not (= only a vTaskDelay) being used here.
 
 # And now?
 
-You can use "raw_reader.py" to visualize the spectrum of the signal.
-
-Beware: no auto-scaling was implemented. You must use the Zoom button.
+You can use "fft_reader.py" to visualize the spectrum of the signal.
 
 # How to start
 
