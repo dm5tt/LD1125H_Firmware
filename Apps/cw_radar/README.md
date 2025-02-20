@@ -9,6 +9,8 @@ This application (cw_radar) sets up a basic CW radar using the LD1125H
 3. The ADC reads out the Bang/Echo signal and writes it into a double buffer using DMA
 4. The UART write these buffer to the interface using DMA
 
+The entire implementation uses Byte-Stuffing and a small frame (FRAME_START + <Byte Stuffed Data> + CRC).
+
 The RTOS is not (= only a vTaskDelay) being used here.
 
 # And now?
@@ -19,13 +21,19 @@ Beware: no auto-scaling was implemented. You must use the Zoom button.
 
 # How to start
 
-1. Start the Python application first. It will wait for the preamble.
+1. Flash and run the firmware LD1125H
 
-2. Flash and run the firmware LD1125H
+2. Execute the Python application
 
+```
+python3 fft_reader.py --help
+usage: fft_reader.py [-h] [--port PORT] [--baudrate BAUDRATE] [--save-raw SAVE_RAW]
 
-# Limitations
+Real-time FFT visualization from serial data.
 
-There's no frame synchronization implemented. The Python script can and will hickup. 
-
-We also only get the I or Q signal of the FMCW IC - not both. So the counterpart must be emulated using a Hilbert or something else.
+options:
+  -h, --help           show this help message and exit
+  --port PORT          Serial port to use (default: /dev/ttyUSB0)
+  --baudrate BAUDRATE  Baud rate for serial communication (default: 4000000)
+  --save-raw SAVE_RAW  Filename to save raw uint16_t samples (e.g., raw_samples.bin)
+```

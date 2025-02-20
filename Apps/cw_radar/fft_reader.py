@@ -7,6 +7,7 @@ from threading import Thread, Event
 from queue import Queue
 import time
 import sys
+import argparse
 
 # Define reserved symbols and XOR value for byte-stuffing
 FRAME_START  = 0x7E
@@ -48,13 +49,19 @@ def read_frame(ser):
 
     return frame_data
 
-def serial_reader(port, baudrate, samples_per_frame, data_queue, stop_event, stats_event, stats):
+def serial_reader(port, baudrate, samples_per_frame, data_queue, stop_event, stats_event, stats, save_raw_data, raw_data_file):
     """Reads framed and debytestuffed data from the serial port, accumulating samples if necessary."""
     try:
         with serial.Serial(port, baudrate, timeout=None) as ser:
             print("Waiting for frames...")
 
             accumulated_samples = []
+
+            if save_raw_data:
+                if raw_data_file is None:
+                    print("Error: Raw data file is None, cannot save data!")
+                    return
+                print(f"Saving raw data to: {raw_data_file.name}")
 
             while not stop_event.is_set():
                 frame_data = read_frame(ser)
@@ -89,6 +96,10 @@ def serial_reader(port, baudrate, samples_per_frame, data_queue, stop_event, sta
                     data_queue.put(frame_to_send)
                     stats["samples_processed"] += samples_per_frame
 
+                    if save_raw_data:
+                        raw_data_file.write(np.array(frame_to_send, dtype=np.uint16).tobytes())
+                        raw_data_file.flush()  # Flush immediately after writing
+
                 if time.time() - stats["last_report_time"] >= 1.0:
                     stats_event.set()
                     stats["last_report_time"] = time.time()
@@ -112,8 +123,12 @@ def stats_printer(stats_event, stats, stop_event):
         stats["crc_errors"] = 0
 
 def main():
-    port = '/dev/ttyUSB0'
-    baudrate = 4000000
+    parser = argparse.ArgumentParser(description="Real-time FFT visualization from serial data.")
+    parser.add_argument('--port', type=str, default='/dev/ttyUSB0', help='Serial port to use (default: /dev/ttyUSB0)')
+    parser.add_argument('--baudrate', type=int, default=4000000, help='Baud rate for serial communication (default: 4000000)')
+    parser.add_argument('--save-raw', type=str, help='Filename to save raw uint16_t samples (e.g., raw_samples.bin)')
+    args = parser.parse_args()
+
     sampling_rate = 50000  # Hz
     fps = 10
     samples_per_frame = sampling_rate // fps
@@ -129,7 +144,16 @@ def main():
         "last_report_time": time.time(),
     }
 
-    reader_thread = Thread(target=serial_reader, args=(port, baudrate, samples_per_frame, data_queue, stop_event, stats_event, stats))
+    raw_data_file = None
+    if args.save_raw:
+        try:
+            raw_data_file = open(args.save_raw, 'wb')
+            print(f"Opened raw data file: {args.save_raw}")
+        except Exception as e:
+            print(f"Error opening file {args.save_raw}: {e}")
+            return
+
+    reader_thread = Thread(target=serial_reader, args=(args.port, args.baudrate, samples_per_frame, data_queue, stop_event, stats_event, stats, bool(args.save_raw), raw_data_file))
     reader_thread.start()
 
     stats_thread = Thread(target=stats_printer, args=(stats_event, stats, stop_event))
@@ -169,6 +193,9 @@ def main():
         stop_event.set()
         reader_thread.join()
         stats_thread.join()
+        if raw_data_file:
+            raw_data_file.close()
+            print("Raw data file closed.")
 
 if __name__ == "__main__":
     main()
