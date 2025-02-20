@@ -40,10 +40,17 @@ Connect a UART to PA10 (TX) and PA9 (RX) using a FTDI like FT232H at a baudrate 
 
 # Example 
 
+### 1. Video + FFT of a Bequiet Fan
+
 ![vlcsnap-2024-12-28-21h09m07s086](https://github.com/user-attachments/assets/9ca926fc-e758-4770-bf42-3fb6cb9ba38e)
 
 
 [LD1125H shows the FFT of the Bang signal of a spinning fan. There is a slight offset in the Python windows when I zoomed into the signals. ](Docs/LD1125H_CW_Radar_FAN.mp4)
+
+
+### 2. Another Spectrum of a BeQuiet fan (Offline processed)
+
+![Doppler Spectrum of a BeQuiet fan](Docs/signal_bequiet_fan.jpeg)
 
 
 # Credits
