@@ -100,8 +100,8 @@ void UsageFault_Handler(void) {
 */
 void DebugMon_Handler(void) {}
 
-extern volatile uint16_t buffer[ADC_SAMPLES];
-extern volatile uint8_t frameBuffer[FRAME_BUFFER_SIZE];
+volatile uint16_t buffer[ADC_SAMPLES] = {0};
+uint8_t frameBuffer[FRAME_BUFFER_SIZE] = {0};
 
 void DMA1_Channel3_4_IRQHandler(void) {
 

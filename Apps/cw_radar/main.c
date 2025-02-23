@@ -10,9 +10,6 @@
 
 #include "gd32f30x.h"
 
-volatile uint16_t buffer[ADC_SAMPLES] = {0};
-volatile uint8_t frameBuffer[FRAME_BUFFER_SIZE] = {0};
-
 
 /* Task nor RTOS really needed here. Did it anyway because it was cheaply adapted from hello_world */
 void vTask1(void *pvParameters) {
@@ -27,7 +24,6 @@ void vTask1(void *pvParameters) {
     vTaskDelay(100);
   }
 }
-
 
 int main(void) {
   setup_systick_config();
