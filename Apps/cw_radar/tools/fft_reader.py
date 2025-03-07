@@ -8,6 +8,8 @@ from queue import Queue
 import time
 import sys
 import argparse
+import os
+from datetime import datetime
 
 # Define reserved symbols and XOR value for byte-stuffing
 FRAME_START  = 0x7E
@@ -49,13 +51,24 @@ def read_frame(ser):
 
     return frame_data
 
-def serial_reader(port, baudrate, samples_per_frame, data_queue, stop_event, stats_event, stats, save_raw_data, raw_data_file):
+def rotate_file(raw_data_file, base_filename, rotation_count):
+    """Rotates the file by closing the current one and opening a new one with an incremented suffix."""
+    raw_data_file.close()
+    new_filename = f"{base_filename}_{rotation_count}.bin"
+    raw_data_file = open(new_filename, 'wb')
+    print(f"Rotated to new file: {new_filename}")
+    return raw_data_file, rotation_count + 1
+
+def serial_reader(port, baudrate, samples_per_frame, data_queue, stop_event, stats_event, stats, save_raw_data, raw_data_file, base_filename, rotate_time, rotate_size, skip_crc_errors):
     """Reads framed and debytestuffed data from the serial port, accumulating samples if necessary."""
     try:
         with serial.Serial(port, baudrate, timeout=None) as ser:
             print("Waiting for frames...")
 
             accumulated_samples = []
+            rotation_count = 0
+            start_time = time.time()
+            bytes_written = 0
 
             if save_raw_data:
                 if raw_data_file is None:
@@ -78,7 +91,8 @@ def serial_reader(port, baudrate, samples_per_frame, data_queue, stop_event, sta
 
                 if computed_checksum != received_checksum:
                     stats["crc_errors"] += 1
-                    continue
+                    if skip_crc_errors:
+                        continue  # Skip this frame if CRC error is detected and skipping is enabled
 
                 if len(payload) % 2 != 0:
                     payload = payload[:-1]
@@ -97,8 +111,17 @@ def serial_reader(port, baudrate, samples_per_frame, data_queue, stop_event, sta
                     stats["samples_processed"] += samples_per_frame
 
                     if save_raw_data:
-                        raw_data_file.write(np.array(frame_to_send, dtype=np.uint16).tobytes())
+                        raw_data = np.array(frame_to_send, dtype=np.uint16).tobytes()
+                        raw_data_file.write(raw_data)
                         raw_data_file.flush()  # Flush immediately after writing
+                        bytes_written += len(raw_data)
+
+                        # Rotate file based on time or size
+                        if (rotate_time > 0 and time.time() - start_time >= rotate_time) or \
+                           (rotate_size > 0 and bytes_written >= rotate_size * 1024 * 1024):
+                            raw_data_file, rotation_count = rotate_file(raw_data_file, base_filename, rotation_count)
+                            start_time = time.time()
+                            bytes_written = 0
 
                 if time.time() - stats["last_report_time"] >= 1.0:
                     stats_event.set()
@@ -127,6 +150,9 @@ def main():
     parser.add_argument('--port', type=str, default='/dev/ttyUSB0', help='Serial port to use (default: /dev/ttyUSB0)')
     parser.add_argument('--baudrate', type=int, default=4000000, help='Baud rate for serial communication (default: 4000000)')
     parser.add_argument('--save-raw', type=str, help='Filename to save raw uint16_t samples (e.g., raw_samples.bin)')
+    parser.add_argument('--rotate-time', type=int, default=0, help='Rotate file after X seconds (default: 0, no rotation)')
+    parser.add_argument('--rotate-size', type=int, default=0, help='Rotate file after X MB (default: 0, no rotation)')
+    parser.add_argument('--skip-crc-errors', action='store_true', help='Skip frames with CRC errors (default: False)')
     args = parser.parse_args()
 
     sampling_rate = 50000  # Hz
@@ -145,15 +171,17 @@ def main():
     }
 
     raw_data_file = None
+    base_filename = None
     if args.save_raw:
         try:
+            base_filename = os.path.splitext(args.save_raw)[0]
             raw_data_file = open(args.save_raw, 'wb')
             print(f"Opened raw data file: {args.save_raw}")
         except Exception as e:
             print(f"Error opening file {args.save_raw}: {e}")
             return
 
-    reader_thread = Thread(target=serial_reader, args=(args.port, args.baudrate, samples_per_frame, data_queue, stop_event, stats_event, stats, bool(args.save_raw), raw_data_file))
+    reader_thread = Thread(target=serial_reader, args=(args.port, args.baudrate, samples_per_frame, data_queue, stop_event, stats_event, stats, bool(args.save_raw), raw_data_file, base_filename, args.rotate_time, args.rotate_size, args.skip_crc_errors))
     reader_thread.start()
 
     stats_thread = Thread(target=stats_printer, args=(stats_event, stats, stop_event))
